@@ -1,0 +1,10 @@
+<?php
+
+namespace App\Repositories\Ad;
+
+use App\Interfaces\Ad\AdRepositoryInterface;
+
+class AdRepository implements   AdRepositoryInterface
+{
+   public
+}

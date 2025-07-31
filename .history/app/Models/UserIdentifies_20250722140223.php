@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class UserIdentifies extends Model
+{
+    protected $table = 'user_identifies';
+
+    protected $fillable = [
+        'national_id_front',
+        'national_id_back',
+        'engineer_card_front',
+        'engineer_card_back',
+        // 'company_logo',
+        'tax_number',
+        'tax_record_front',
+        'tax_record_back',
+        'tax_card_front',
+        'tax_card_back',
+
+    ];
+}
+ 

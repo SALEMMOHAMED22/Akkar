@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Repositories\Category;
+
+use App\Models\Category;
+use App\Interfaces\Category\CategoryRepositoryInterface;
+
+class CategoryRepository implements CategoryRepositoryInterface
+{
+    public function getCategories()
+    {
+      $categories = Category::with('subCategories')->get();
+
+      
+      if(!$categories){
+        return false;
+      }
+
+      return $categories;
+
+
+
+    }
+
+
+    public fun
+}

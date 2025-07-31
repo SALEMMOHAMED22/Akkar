@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class AdSubSubCategory extends Model
+{
+    protected $fillable = [
+        'name_ar',
+        'name_ar',
+        'ad_sub_category_id',
+    ];
+}

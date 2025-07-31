@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Models;
+
+use App\Models\AdSubSubCategory;
+use Illuminate\Database\Eloquent\Model;
+
+class AdSubCategory extends Model
+{
+    protected $fillable = [
+        'name_ar',
+        'name_en',
+        'ad_category_id',
+    ];
+
+    public function adSubSubCategories()
+    {
+        return $this->hasMany(AdSubSubCategory::class);
+    }
+
+    public function adCategory()
+    {
+        return $this->belongsTo(AdCategory::class);
+    }
+
+}

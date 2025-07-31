@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Ad extends Model
+{
+    protected $table = 'ads';
+    protected $fillable = [
+        'user_id',
+        'ad_category_id',
+        'ad_sub_category_id',
+        'ad_sub_sub_category_id',
+        'ad_name',
+        'price',
+        
+    ];
+}
