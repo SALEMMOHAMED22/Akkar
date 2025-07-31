@@ -1,0 +1,21 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\dashboard\RolesController;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/run-config-clear', function () {
+    Artisan::call('config:clear');
+    return '✅ config:clear تم بنجاح';
+});
+
+
+route::get('/index', function () {
+    return view('dashboard.index');
+});
+
+Route::resource('roles', RolesController::class);
