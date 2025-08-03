@@ -23,12 +23,12 @@ class RegisterController extends Controller
     public function register(UserRequest $request)
     {
 
-        $user = $this->authRepo->register($request->validated());
-        if (! $user) {
+        $result = $this->authRepo->register($request->validated());
+        if (! $result) {
             return apiResponse(400, 'User registration failed');
         }
 
-        return apiResponse(200, 'User registered successfully', ['email' => $user->email]  );
+        return apiResponse(200, 'User registered successfully', ['email' => $result['user']->email , 'code' => $result['otp'] ]  );
     }
 
     public function verifyEmail(VerifyRequest $request)

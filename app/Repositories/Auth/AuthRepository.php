@@ -30,7 +30,7 @@ class AuthRepository implements AuthRepositoryInterface
                 'job_title_id'   => $data['job_title_id'] ?? null,
             ];
             $user = User::create(array_merge($commonData, $individualData));
-            
+
             // $user->notify(new SendOtpNotify($user->email));
         } elseif ($data['type'] === 'company') {
             $companyData = [
@@ -43,10 +43,16 @@ class AuthRepository implements AuthRepositoryInterface
             throw new \Exception('Invalid user type');
         }
 
+        $otp = sendOtp($user->email);
         // Send OTP via email
-        $user->notify(new SendOtpNotify($user->email));
 
-        return $user;
+        //    $user->notify(new SendOtpNotify($user->email));
+        $user->notify(new SendOtpNotify($otp));
+
+        return [
+            'user' => $user,
+            'otp' => $otp,
+        ];
     }
 
 
@@ -56,7 +62,7 @@ class AuthRepository implements AuthRepositoryInterface
         $user = User::where('email', $email)->first();
 
         if (!$user) {
-            return null; 
+            return null;
         }
 
         $otp = Otp::where('identifier', $email)
@@ -65,20 +71,20 @@ class AuthRepository implements AuthRepositoryInterface
             ->first();
 
         if (!$otp) {
-            return false; 
+            return false;
         }
- 
+
         $user->email_verified_at = now();
         $user->save();
 
-        
-        $otp->delete(); 
 
-        
+        $otp->delete();
+
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return [
-            'user' =>$user,
+            'user' => $user,
             'token' => $token,
         ];
     }
@@ -87,18 +93,14 @@ class AuthRepository implements AuthRepositoryInterface
     public function resendOtp(string $email)
     {
         $user = User::where('email', $email)->first();
-        
+
         if (!$user) {
             throw new \Exception('User not found');
         }
 
         $user->notify(new SendOtpNotify($user->email));
 
-        return $user ; 
-       
-
-
-
+        return $user;
     }
 
     public function login(array $credentials)
@@ -111,10 +113,10 @@ class AuthRepository implements AuthRepositoryInterface
         }
 
         if (!$user->email_verified_at) {
-           
-             $user->notify(new SendOtpNotify($user->email));
-             
-             return "notactive";
+
+            $user->notify(new SendOtpNotify($user->email));
+
+            return "notactive";
         }
 
 
@@ -142,14 +144,10 @@ class AuthRepository implements AuthRepositoryInterface
             throw new \Exception('Token not found');
         }
 
-       if(!  $token->delete()){
-        return false;
-       }else{
-        return true;
-       }
-
-
-
-       
+        if (! $token->delete()) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

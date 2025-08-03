@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\TermsAndCondition;
+use App\Models\Role\RoleSeeder as RoleRoleSeeder;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Database\Seeders\RoleSeeder;
+use App\Models\TermsAndCondition;
 
 class DatabaseSeeder extends Seeder
 {
@@ -32,6 +34,7 @@ class DatabaseSeeder extends Seeder
             JobTitleSeeder::class,
             TermsAndConditionSeeder::class,
             PrivacyPolicySeeder::class,
+            RoleSeeder::class,
             AdminSeeder::class,
             
             

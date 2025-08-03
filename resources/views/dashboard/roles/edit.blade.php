@@ -5,10 +5,10 @@
         <div class="main-content">
             <div class="row mb-5">
                 <div class="col-12 col-xl-10 mx-auto">
-                    {{-- @include('dashboard.validation-error') --}}
-                    <form method="post" action="{{ route('dashboard.roles.store') }}">
+                    @include('dashboard.validation-error')
+                    <form method="post" action="{{ route('dashboard.roles.update' , $role->id) }}">
                         @csrf
-
+                        @method('PUT')
                         <!-- Card for Role Name -->
                         <div class="card shadow-sm rounded-3 border-0">
                             <div class="card-body">
@@ -16,10 +16,10 @@
                                     <i class="fas fa-user-tag me-2"></i> {{ __('dashboard.role_name_ar') }}
                                 </h5>
                                 <input type="text" name="role_ar" class="form-control rounded-pill shadow-sm"
-                                    placeholder="{{ __('dashboard.Enter Role Name Arabic') }}">
-                                    @error('role_ar')
+                                    placeholder="{{ __('dashboard.Enter Role Name Arabic') }}"  value="{{ old('role_ar', $role->role_ar ?? '') }}">
+                                    {{-- @error('role_ar')
                                         <strong class="text-danger">{{ $message }}</strong>
-                                    @enderror
+                                    @enderror --}}
                             </div>
                         </div>
                         <div class="card shadow-sm rounded-3 border-0">
@@ -28,10 +28,12 @@
                                     <i class="fas fa-user-tag me-2"></i> {{ __('dashboard.role_name_en') }}
                                 </h5>
                                 <input type="text" name="role_en" class="form-control rounded-pill shadow-sm"
-                                    placeholder="{{ __('dashboard.Enter Role Name English') }}">
-                                    @error('role_en')
+                                    placeholder="{{ __('dashboard.Enter Role Name English') }}"
+                                     value="{{ old('role_en', $role->role_en ?? '') }}"
+                                    >
+                                    {{-- @error('role_en')
                                         <strong class="text-danger">{{ $message }}</strong>
-                                    @enderror
+                                    @enderror --}}
                             </div>
                         </div>
 
@@ -42,10 +44,34 @@
                                     <i class="fas fa-shield-alt me-2"></i> {{ __('dashboard.Assign Permissions') }}
                                 </h5>
 
+                                <!-- Select All Checkbox -->
+                                {{-- <div class="d-flex align-items-center gap-2 mb-3">
+                                    <input type="checkbox" id="check" class="form-check-input"
+                                        style="transform: scale(1.3); cursor: pointer;">
+                                    <label for="check"
+                                        class="form-check-label fw-bold text-danger">{{ __('Select All') }}</label>
+                                </div> --}}
+
                                 <!-- Permissions Grid in Accordion -->
                                 <div class="accordion" id="permissionsAccordion">
-                                   
+                                    {{-- @php
+                                    $groupedPermissions = $permissions->groupBy(function ($perm) {
+                                        return explode('-', $perm->name)[0]; // Group by first part before "-"
+                                    });
+                                @endphp --}}
+
+
+
                                     <div class="accordion-item border-0 mb-2 shadow-sm">
+                                        {{-- <h2 class="accordion-header" id="heading-{{ $group }}">
+                                            <button class="accordion-button bg-light text-dark fw-bold shadow-none"
+                                                type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#collapse-{{ $group }}" aria-expanded="true"
+                                                aria-controls="collapse-{{ $group }}">
+                                                <i class="fas fa-folder me-2 text-primary"></i>
+                                                {{ __('Manage') }} {{ __(ucfirst($group)) }}
+                                            </button>
+                                        </h2> --}}
                                         <div id="collapse" class="accordion-collapse collapse show"
                                             aria-labelledby="heading"
                                             data-bs-parent="#permissionsAccordion">
@@ -56,19 +82,22 @@
                                                         <div class="col-md-4 col-sm-6 mb-2">
                                                             <div class="form-check bg-white p-2 rounded shadow-sm border">
                                                                 <input type="checkbox" class="form-check-input checkbox"
-                                                                    name="permissions[]" value="{{ $key }}">
+                                                                    name="permissions[]" value="{{ $key }}"@checked(in_array($key , $role->permissions)) >
                                                                 <label class="form-check-label text-dark ms-2">
                                                                     {{ $value }}
                                                                 </label>
                                                             </div>
                                                         </div>
+
                                                     @endforeach
+
                                                     @else
+
                                                     @foreach (config('permission_en') as $key => $value)
                                                         <div class="col-md-4 col-sm-6 mb-2">
                                                             <div class="form-check bg-white p-2 rounded shadow-sm border">
                                                                 <input type="checkbox" class="form-check-input checkbox"
-                                                                    name="permissions[]" value="{{ $key }}">
+                                                                    name="permissions[]" value="{{ $key }}" @checked(in_array($key , $role->permissions))>
                                                                 <label class="form-check-label text-dark ms-2">
                                                                     {{ $value }}
                                                                 </label>
@@ -89,7 +118,7 @@
 
                         <!-- Save Button -->
                         <button type="submit" class="btn btn-primary mt-4 w-100 shadow-sm rounded-pill">
-                            <i class="fas fa-save me-2"></i> {{ __('Save') }}
+                            <i class="fas fa-save me-2"></i> {{ __('dashboard.Save') }}
                         </button>
                     </form>
                 </div>

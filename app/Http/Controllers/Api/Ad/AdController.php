@@ -178,7 +178,7 @@ class AdController extends Controller
         ]);
 
         $search = $request->search;
-
+ 
         $ads = $this->adRepo->searchAds($search);
         if (!$ads) {
             return apiResponse(400, 'No ads found');

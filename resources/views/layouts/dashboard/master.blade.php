@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <!-- beautify ignore:start -->
 <html
-  lang="en"
+  lang="{{ app()->getLocale() }}"
   class="light-style layout-menu-fixed"
-  dir="ltr"
+  dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}"
+
   data-theme="theme-default"
-  data-assets-path="../assets/"
+  data-assets-path="{{ asset('assets/dashboard') }}/"
   data-template="vertical-menu-template-free"
 >
   <head>
@@ -34,7 +35,7 @@
 
           <!-- Content wrapper -->
             <!-- Content -->
-
+          <div class="content-wrapper">
             @yield('content')
 
             <!-- / Content -->

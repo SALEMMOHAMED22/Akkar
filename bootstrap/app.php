@@ -20,7 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         }
     )
     ->withMiddleware(function (Middleware $middleware) {
-        $middleware->append(SetLocale::class);
+        // $middleware->append(SetLocale::class);
 
         $middleware->redirectGuestsTo(function () {
             if (request()->is('*/dashboard/*')) {
@@ -45,6 +45,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'localeSessionRedirect'   => \Mcamara\LaravelLocalization\Middleware\LocaleSessionRedirect::class,
             'localeCookieRedirect'    => \Mcamara\LaravelLocalization\Middleware\LocaleCookieRedirect::class,
             'localeViewPath'          => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath::class,
+
+            'setLocale'               => SetLocale::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

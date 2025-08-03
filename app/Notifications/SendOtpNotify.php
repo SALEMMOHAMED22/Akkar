@@ -12,10 +12,10 @@ class SendOtpNotify extends Notification
 {
     use Queueable;
 
-   public $email;
-    public function __construct($email)
+   public $otp;
+    public function __construct($otp)
     {
-        $this->email = $email;
+        $this->otp = $otp;
     }
 
     public function via(object $notifiable): array
@@ -27,12 +27,12 @@ class SendOtpNotify extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         
-     $otp =  sendOtp($this->email);
-            // dd($otp);
+    //  $otp =  sendOtp($this->email);
+            // dd($this->otp);
         return (new MailMessage)
             ->greeting('otp code')
             ->line('Verify your account.')
-            ->line('Code : '.$otp);
+            ->line('Code : '.$this->otp);
     }
 
  

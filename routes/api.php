@@ -14,6 +14,8 @@ use App\Http\Controllers\Api\Password\ResetPasswordController;
 use App\Http\Controllers\Api\Provider\ProviderController;
 use App\Http\Controllers\ContactController;
 
+Route::middleware(['setLocale'])->group(function () {
+
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
@@ -114,5 +116,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
 
 
+
+});
 
 });

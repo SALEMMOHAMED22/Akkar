@@ -274,5 +274,10 @@ class AdRepository implements AdRepositoryInterface
             ->withCount('reviews')
             ->latest()
             ->paginate(9);
+
+        if (! $ads) {
+            return false;
+        }
+        return $ads;
     }
 }

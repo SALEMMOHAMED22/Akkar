@@ -2,12 +2,23 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Dashboard\LoginRequest;
+use App\Models\Admin;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Dashboard\LoginRequest;
+use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Routing\Controllers\HasMiddleware;
 
-class AuthController extends Controller
+class AuthController extends Controller implements HasMiddleware
 {
+
+    public static function middleware()
+    {
+        return [
+            new Middleware(middleware: 'guest:admin' , except: ['logout']),
+        ];
+    }
     
     public function showLoginForm(){
 
@@ -17,10 +28,30 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request){
 
-        $credentials = $request->only('email' , 'password');
-        if(auth('admin')->attempt($credentials)){
-            return redirect()->route('dashboard.home');
+        $email = $request->email;
+        $password = $request->password;
+
+
+
+       $admin = Admin::where('email' , $email)->first();
+        if(!$admin){
+            return redirect()->back()->withErrors(['email' => 'Credintials does not match']);
         }
-        return redirect()->route('dashboard.login')->with('error' , 'Invalid email or password');
+
+        if($admin->status == 'Inactive'){
+            return redirect()->back()->withErrors(['email' => 'Your account is blocked , please contact admin']);
+        }
+        
+        if(auth('admin')->attempt(['email' => $email , 'password' => $password ] , true)){
+
+            return redirect()->route('dashboard.home')->with('success', 'Login successfully');
+        }
+        return redirect()->back()->withErrors(['email' => 'Credintials does not match']);
+    }
+
+
+    public function logout(){
+        Auth::guard('admin')->logout();
+        return redirect()->route('dashboard.login')->with('success', 'Logout successfully');
     }
 }

@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Dashboard;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends FormRequest
+class AdminRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +23,12 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email'],
-            'password' => ['required', 'string', 'max:35'],
+            'name' => ['required', 'string' , 'max:100'],
+            'email' => ['required', 'email' , 'max:100' ,Rule::unique('admins', 'email')->ignore($this->admin)],
+            'password' => ['required', 'min:6', 'confirmed'],
+            'password_confirmation' => ['required', 'min:6'],
+            'role_id' => ['required', 'exists:roles,id'],
+            'status' => ['required', 'boolean'],
         ];
     }
 }

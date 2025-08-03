@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\Log;
 use App\Repositories\FaqsRepository;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Gate;
 use App\Repositories\Ad\AdRepository;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\Auth\AuthRepository;
@@ -48,6 +51,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Paginator::useBootstrap();
+
+         foreach (config('permission_en') as $config_permission => $value) {
+            Log::info("Defining gate for permission: {$config_permission}");
+            Gate::define($config_permission, function ($auth) use ($config_permission) {
+                return $auth->hasAccess($config_permission);
+            });
+        }
     }
 }

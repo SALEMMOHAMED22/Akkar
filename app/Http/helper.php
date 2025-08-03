@@ -31,6 +31,6 @@ if (! function_exists('sendOtp')) {
 
 
 
-        return $randOtp;
+        return $otp->code;
     }
 }

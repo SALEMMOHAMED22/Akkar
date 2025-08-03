@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\RoleRequest;
-use App\Http\Requests\UpdateRoleRequest;
+use App\Models\Role;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\{DB, Session};
-use Spatie\Permission\Models\Permission;
 use App\Http\Requests\PermissionRequest;
+use App\Http\Requests\UpdateRoleRequest;
+use Spatie\Permission\Models\Permission;
+use App\Http\Requests\Dashboard\RoleRequest;
+use Illuminate\Support\Facades\{DB, Session};
+use App\Http\Requests\Dashboard\RoleRequest as DashboardRoleRequest;
 
 class RolesController extends Controller
 {
@@ -25,60 +26,65 @@ class RolesController extends Controller
     public function create()
     {
         // $this->authorize('roles-اضافة');
-        $permissions = Permission::all();
-        // dd($permissions);
-        return view('dashboard.roles.create', compact('permissions'));
+        return view('dashboard.roles.create');
     }
 
 
-    public function store(RoleRequest $request, PermissionRequest $permissionRequest)
+    public function store(RoleRequest $request)
     {
-        // $this->authorize('roles-اضافة');
-        if ($request->select_all) {
-            $permissions = json_decode($request->select_all);
-        } else {
-            $permissions = $permissionRequest->permission_name;
+    
+
+        $role = Role::create([
+            'role_ar' => $request->role_ar,
+            'role_en' => $request->role_en,
+            'permissions' => json_encode($request->permissions),
+        ]);
+        if(! $role){
+            return redirect()->back()->withErrors(['error', 'Role not created']);
         }
-
-        $role = Role::create($request->validated());
-        $role->syncPermissions($permissions);
-
-        Session::flash('message', ['type' => 'success', 'text' => __('Role created successfully')]);
-        return redirect()->route('roles.index');
+       
+        return redirect()->route('dashboard.roles.index')->with('success', 'Role created successfully');
     }
 
-    public function edit(Role $role)
+    public function edit($id)
     {
-        $roles = Role::get();
-        // $this->authorize('roles-تعديل');
-        $ids = $role->permissions->pluck('id')->toArray();
-        $permissions = Permission::all();
-        $permissionNum = $role->permissions->count();
-        // return 'err';
-        return view('dashboard.roles.update', compact('role', 'permissions', 'permissionNum', 'ids', 'roles'));
-    }
-
-    public function update(UpdateRoleRequest $request, PermissionRequest $req, Role $role)
-    {
-        // $this->authorize('roles-تعديل');
-
-        if ($request->select_all) {
-            $permissions = json_decode($request->select_all);
-        } else {
-            $permissions = $req->permission_name;
+        if($id == 1){
+            return redirect()->back()->with('error', 'You can not delete this role');
         }
-        $role->update(['name' => $request->name]);
-        $role->syncPermissions($permissions);
+        $role = Role::findOrFail($id);
+       
+        if(! $role){
+            return redirect()->back()->withErrors(['error', 'Role not found']);
+        }
+        return view('dashboard.roles.edit', compact('role'));
+    }
 
-        Session::flash('message', ['type' => 'success', 'text' => __('Role updated successfully')]);
-        return redirect()->route('roles.index');
+    public function update(UpdateRoleRequest $request, $id)
+    {
+        $role = Role::findOrFail($id);
+        if(! $role){
+            return redirect()->back()->withErrors(['error', 'Role not found']);
+        }
+       $updatedRole = $role->update([
+            'role_ar' => $request->role_ar,
+            'role_en' => $request->role_en,
+            'permissions' => json_encode($request->permissions),
+        ]);
+        if(! $updatedRole){
+            return redirect()->back()->withErrors(['error', 'Role not updated']);
+        }
+        return redirect()->route('dashboard.roles.index')->with('success', 'Role updated successfully');
+
+       
     }
 
     public function destroy($id)
     {
+        if($id == 1){
+            return redirect()->back()->with('error', 'You can not delete this role');
+        }
         $role = Role::findOrFail($id);
-        $role->revokePermissionTo($role->permissions);
         $role->delete();
-        return redirect()->route('roles.index');
+        return redirect()->route('dashboard.roles.index')->with('success', 'Role deleted successfully');
     }
 }

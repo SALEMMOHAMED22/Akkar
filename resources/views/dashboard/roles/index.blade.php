@@ -2,66 +2,85 @@
 {{-- @include('dashboard.layouts.header') --}}
 
 @section('content')
-<div class="content_wrapper with-sidenav">
-    <div class="">
-        <div class="row mb-5">
-            <div class="col-12 col-xl-12">
-                <div style="background-color: transparent !important" class="card">
-                    <div class="add d-flex justify-content-end p-2">
-                        {{-- @can('roles-create') --}}
-                        @can('roles-create')
-                            <a href="{{ route('roles.create') }}" class="btn btn-primary">
-                                <i class="fas fa-add"></i> {{ __('إضافه') }}
-                            </a>
-                        @endcan
-                        {{-- @endcan --}}
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive text-center">
-                            <table id="example2" class="table table-striped table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th>{{ __('#') }}</th>
-                                        <th>{{ __('الاسم') }}</th>
-                                        <th>{{ __('عدد الصلاحيات') }}</th>
-                                        <th>{{ __('عدد المستخدمين') }}</th>
-                                        <th>{{ __('العمليات') }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($roles as $role)
+    <div class="content_wrapper with-sidenav">
+        <div class="">
+            <div class="row mb-5">
+                <div class="col-12 col-xl-12">
+                    <div style="background-color: transparent !important" class="card">
+                        <div class="add d-flex justify-content-end p-2">
+                            {{-- @can('roles-create') --}}
+                            @can('roles-create')
+                                <a href="{{ route('dashboard.roles.create') }}" class="btn btn-primary">
+                                    <i class="fas fa-add"></i> {{ __('dashboard.add_role') }}
+                                </a>
+                            @endcan
+                            {{-- @endcan --}}
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive text-center">
+                                <table id="example2" class="table table-striped table-bordered">
+                                    <thead>
                                         <tr>
-                                            <td>{{ $role->id }}</td>
-                                            <td>{{ $role->name }}</td>
-                                            <td>{{ count($role->permissions) }}</td>
-                                            <td>{{ count($role->users) }}</td>
-                                            <td>
-                                                {{-- @can('roles-delete') --}}
-                                                @can('roles-delete')
-                                                    <button type="button" class="btn btn-danger w-25 delete-country-btn"
-                                                        data-id="{{ $role->id }}">
-                                                        <i class="far fa-trash-alt"></i>
-                                                    </button>
-                                                @endcan
-                                                {{-- @endcan --}}
-                                                {{-- @can('roles-update') --}}
-                                                <a href="{{ route('roles.edit', $role) }}" class="btn btn-info w-25">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                @can(abilities: 'roles-update')
-                                                @endcan
-                                                {{-- @endcan --}}
-                                            </td>
+                                            <th>{{ __('#') }}</th>
+                                            <th>{{ __('dashboard.role_name') }}</th>
+                                            <th>{{ __('dashboard.permissions') }}</th>
+                                            <th>{{ __('dashboard.actions') }}</th>
                                         </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="5">{{ __('No data available!') }}</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
-                            <div style="padding:5px;direction: ltr;">
-                                {!! $roles->withQueryString()->links('pagination::bootstrap-5') !!}
+                                    </thead>
+                                    <tbody>
+                                        @forelse($roles as $role)
+                                            <tr>
+                                                <td>{{ $loop->iteration }}</td>
+                                                <td>{{ app()->getLocale() == 'ar' ? $role->role_ar : $role->role_en }}</td>
+                                                <td>
+                                                    @if (Config::get('app.locale') == 'ar')
+                                                        @foreach ($role->permissions as $perm)
+                                                            @foreach (config('permission_ar') as $key => $value)
+                                                                {{ $key == $perm ? $value . ' , ' : '' }}
+                                                            @endforeach
+                                                        @endforeach
+                                                    @else
+                                                        @foreach ($role->permissions as $perm)
+                                                            {{ $perm }},
+                                                        @endforeach
+                                                    @endif
+                                                </td>
+                                                <td class="text-center align-middle">
+                                                    <div class="d-inline-flex gap-2">
+
+                                                        <a href="{{ route('dashboard.roles.edit', $role->id) }}"
+                                                            class="btn btn-sm btn-outline-primary">
+                                                            <i class="fas fa-edit me-1"></i> {{ __('dashboard.edit') }}
+                                                        </a>
+
+
+                                                        <form id="delete-form-{{ $role->id }}"
+                                                            action="{{ route('dashboard.roles.destroy', $role->id) }}"
+                                                            method="POST" class="delete-form">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="button" data-id="{{ $role->id }}"
+                                                                class="btn btn-sm btn-outline-danger delete-btn">
+                                                                <i class="fas fa-trash me-1"></i>
+                                                                {{ __('dashboard.delete') }}
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+
+
+
+                                            </tr>
+
+                                        @empty
+                                            <tr>
+                                                <td colspan="5">{{ __('No data available!') }}</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                                {{ $roles->links() }}
+
                             </div>
                         </div>
                     </div>
@@ -69,12 +88,11 @@
             </div>
         </div>
     </div>
-</div>
 
 
 @endsection
 
-
+{{-- 
 @push('scripts')
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -113,6 +131,47 @@
                             form.appendChild(methodInput);
                             document.body.appendChild(form);
                             form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+@endpush --}}
+
+@push('js')
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: "btn btn-success me-2",
+                    cancelButton: "btn btn-danger"
+                },
+                buttonsStyling: false
+            });
+
+            document.querySelectorAll(".delete-btn").forEach(button => {
+                button.addEventListener("click", function() {
+                    const id = this.getAttribute("data-id");
+                    const form = document.getElementById(`delete-form-${id}`);
+
+                    swalWithBootstrapButtons.fire({
+                        title: "{{ __('dashboard.are_you_sure') }}",
+                        text: "{{ __('dashboard.delete_message') }}",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "{{ __('dashboard.yes_delete_it') }}",
+                        cancelButtonText: "{{ __('dashboard.no_cancel') }}",
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        } else if (result.dismiss === Swal.DismissReason.cancel) {
+                            swalWithBootstrapButtons.fire({
+                                title: "{{ __('dashboard.cancelled') }}",
+                                text: "{{ __('dashboard.cancelled_message') }}",
+                                icon: "error"
+                            });
                         }
                     });
                 });

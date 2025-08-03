@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Dashboard;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class RoleRequest extends FormRequest
 {
@@ -23,9 +22,9 @@ class RoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
-                        'name'=> ['required', Rule::unique('roles')]
-
+            'role_ar' => ['required', 'string' , 'max:100' , 'unique:roles,role_ar'],
+            'role_en' => ['required', 'string' , 'max:100' , 'unique:roles,role_en'],
+            'permissions' => ['required' , 'array' , 'min:1'],
         ];
     }
 }
