@@ -1,0 +1,91 @@
+@extends('layouts.dashboard.master')
+
+
+@section('title', 'Create Admin')
+
+@section('content')
+    <div class="row">
+        <div class="col-xl">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Create Admin</h5>
+                    {{-- <small class="text-muted float-end">Merged input group</small> --}}
+                </div>
+                <div class="card-body">
+                    <form action="{{ route('dashboard.admins.store') }}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label" for="basic-icon-default-fullname">Full Name</label>
+                            <div class="input-group input-group-merge">
+                                <span id="basic-icon-default-fullname2" class="input-group-text"><i
+                                        class="bx bx-user"></i></span>
+                                <input name="name" type="text" class="form-control" id="basic-icon-default-fullname"
+                                    placeholder="Enter Name" aria-label="John Doe"
+                                    aria-describedby="basic-icon-default-fullname2" />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label" for="basic-icon-default-email">Email</label>
+                            <div class="input-group input-group-merge">
+                                <span class="input-group-text"><i class="bx bx-envelope"></i></span>
+                                <input name="email" type="text" id="basic-icon-default-email" class="form-control"
+                                    placeholder="Enter Email" aria-label="john.doe"
+                                    aria-describedby="basic-icon-default-email2" />
+                                <span id="basic-icon-default-email2" class="input-group-text">@example.com</span>
+                            </div>
+                            {{-- <div class="form-text">You can use letters, numbers & periods</div> --}}
+                        </div>
+                        <label class="form-label" for="basic-icon-default-email">Password</label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="bx bx-envelope"></i></span>
+                            <input name="password" type="password" id="basic-icon-default-email" class="form-control"
+                                placeholder="Enter Password" aria-label="john.doe"
+                                aria-describedby="basic-icon-default-email2" />
+                            <span id="basic-icon-default-email2" class="input-group-text"></span>
+                        </div>
+                        <label class="form-label" for="basic-icon-default-email">Password Confirmation</label>
+                        <div class="input-group input-group-merge">
+                            <span class="input-group-text"><i class="bx bx-envelope"></i></span>
+                            <input name="password_confirmation" type="password" id="basic-icon-default-email" class="form-control"
+                                placeholder="Enter Password Confirmation" aria-label="john.doe"
+                                aria-describedby="basic-icon-default-email2" />
+                            <span id="basic-icon-default-email2" class="input-group-text"></span>
+                        </div>
+
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="basic-icon-default-message">Select Role</label>
+                    <div class="input-group input-group-merge">
+                        <select class="form-control" name="role_id">
+                            <optgroup label="Select Role">
+                                <option selected disabled>select Role</option>
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role->id }}"> @
+                                    </option>
+                                @endforeach
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="basic-icon-default-message">Select Status</label>
+                    <div class="input-group input-group-merge">
+                        <select class="form-control" name="status">
+                            <optgroup label="Select Role">
+                                <option selected disabled>select status</option>
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Send</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    </div>
+@endsection

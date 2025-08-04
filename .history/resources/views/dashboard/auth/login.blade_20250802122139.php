@@ -1,0 +1,10 @@
+@extends('layouts.dashboard.auth')
+
+
+@section('title')
+    Login
+@endsection
+
+@section('conte')
+    
+@endsection

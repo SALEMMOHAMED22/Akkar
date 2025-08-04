@@ -1,0 +1,52 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\RolesController;
+use App\Http\Controllers\Dashboard\AuthController;
+use App\Http\Controllers\Dashboard\HomeController;
+use Illuminate\Auth\Notifications\ResetPassword;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+
+Route::group(
+    [
+        'prefix' => LaravelLocalization::setLocale() . '/dashboard',
+        'as' => 'dashboard.',
+        'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']
+    ],
+    function () {
+        // Login Routes 
+        Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+        Route::post('login', [AuthController::class, 'login'])->name('login.post');
+        Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
+
+        // Reset Password Routes
+
+        Route::prefix('password')->as('password.')->group(function () {
+            Route::get('reset', [ResetPassword::class, 'showResetForm'])->name('reset');
+            Route::post('email', [ResetPassword::class, 'sendResetLinkEmail'])->name('email');
+            Route::get('reset/{token}', [ResetPassword::class, 'showResetForm'])->name('reset.token');
+            Route::post('reset', [ResetPassword::class, 'reset'])->name('reset.post');
+        });
+
+
+
+        Route::group(['middleware' => 'auth:admin'], function () {
+
+            Route::get('/home', [HomeController::class, 'index'])->name('home');
+        });
+
+
+
+
+        Route::resource('roles', RolesController::class);
+    }
+
+);
