@@ -1,0 +1,9 @@
+<?php
+
+namespace App\Interfaces\Plans;
+
+interface PlanRepositoryInterface
+{
+    public function getPlanCategories();
+    public function getPlansWithFeatures();
+}
