@@ -1,0 +1,80 @@
+@extends('layouts.dashboard.master')
+@section('title')
+    contacts
+@endsection
+@section('content')
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+
+        <!-- Page Heading -->
+        <h1 class="h3 mb-2 text-gray-800">Contact Table</h1>
+
+
+        <!-- DataTales Example -->
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Contact managment</h6>
+            </div>
+
+            {{-- @include('Admin.contacts.filter') --}}
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>phone</th>
+                                <th>subject</th>
+                                <th>message</th>
+                                <th>Created At</th>
+                            </tr>
+                        </thead>
+                        {{-- <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>phone</th>
+                                <th>subject</th>
+                                <th>message</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </tfoot> --}}
+                        <tbody>
+                            @forelse ($contacts as $contact)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $contact->name }}</td>
+                                    <td>{{ $contact->email }}</td>
+                                    <td>{{ $contact->phone }}</td>
+                                    <td>{{ $contact->subject }}</td>
+                                    <td>{{ $contact->message }}</td>
+                                    <td>{{ $contact->created_at->diffForHumans() }}</td>
+                                    
+                                </tr>
+
+                                {{-- <form id="delete_contact_{{ $contact->id }}"
+                                    action="{{ route('admin.contacts.destroy', $contact->id) }}" method="post">
+                                    @csrf
+                                    @method('DELETE')
+                                </form> --}}
+                            @empty
+                                <tr>
+                                    <tdv class="alert alert-info" colspan="6"> No contacts</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                    {{ $contacts->appends(request()->input())->links() }}
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    <!-- /.container-fluid -->
+@endsection
