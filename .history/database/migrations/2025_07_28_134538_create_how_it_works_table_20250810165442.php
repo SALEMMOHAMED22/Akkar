@@ -11,8 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->boolean('is_active')->default(true)->after('email_notification');
+        Schema::create('how_it_works', function (Blueprint $table) {
+            $table->id();
+            $table->string('title_ar');
+            
+            $table->longText('desc_ar');
+            $table->longText('desc_en');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('is_active');
-        });
+        Schema::dropIfExists('how_it_works');
     }
 };
