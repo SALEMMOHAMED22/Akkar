@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Http\Controllers\Dashboard;
+
+use App\Models\Ad;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+class AdController extends Controller
+{
+    public function index(){
+        $ads = Ad::with([
+    'adCategory',
+    'adSubCategory',
+    'adSubSubCategory',
+    'user',
+    'images',
+    'userWorks',
+    'adFiles',
+    'reviews',
+])->latest()->paginate(9);
+
+return view('dashboard.ads.index', compact('ads'));
+
+    }
+
+
+
+    public function showAd($id){
+        $ad = Ad::with([
+        'adCategory',
+        'adSubCategory',
+        'adSubSubCategory',
+        'user',
+        'images',
+        'userWorks',
+        'adFiles',
+        'reviews.user', 
+    ])->findOrFail($id);
+
+    return view('dashboard.ads.show', compact('ad'));
+    }
+}
+ 
